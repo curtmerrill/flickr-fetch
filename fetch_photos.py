@@ -1,4 +1,6 @@
+import json
 import requests
+
 from fetch_config import *
 
 FLICKR_URL = "https://api.flickr.com/services/rest/"
@@ -14,25 +16,24 @@ def get_album():
         "nojsoncallback": "1",
     } 
 
-    album = requests.get(FLICKR_URL, params=api_options).json()
-    return album
+    album_response = requests.get(FLICKR_URL, params=api_options)
+    album_response.raise_for_status()
+    album = album_response.json()
+    if album["stat"] != "ok":
+        raise Exception("error returned from Flickr")
+    else:
+        return album['photoset']['photo']
 
-print(get_album())
 
-# This loops through the list of photos fetched earlier and gets
-# more detail for each photo
-def get_photos():
+my_photos = []
 
-    # Requires 2 calls per photo:
-    # flickr.photos.getInfo for date, title, tags, etc.
-    # flickr.photos.getSizes for thumbnail/full-size img urls
+for p in get_album():
+    single_photo = {
+        "title": p["title"],
+        "img_sm": "http://farm{farm}.staticflickr.com/{server}/{id}_{secret}_n.jpg".format(**p),
+        "img_lg": "http://farm{farm}.staticflickr.com/{server}/{id}_{secret}_c.jpg".format(**p),
+    }
+    my_photos.append(single_photo)
 
-    api_options = {
-        # "method": "flickr.photosets.getPhotos",
-        "api_key": FLICKR_API_KEY,
-        "photoset_id": FLICKR_ALBUM_ID,
-        "format": "json",
-        "nojsoncallback": "1",
-    } 
-
-    pass
+photos_json = json.dumps(my_photos)
+print(photos_json)

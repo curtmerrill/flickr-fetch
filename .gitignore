@@ -1,3 +1,4 @@
 env
 *.py[co]
 fetch_config.py
+__pycache__
