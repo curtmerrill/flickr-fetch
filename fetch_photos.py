@@ -33,6 +33,7 @@ for p in get_album():
         "title": p["title"],
         "img_sm": "http://farm{farm}.staticflickr.com/{server}/{id}_{secret}_n.jpg".format(**p),
         "img_lg": "http://farm{farm}.staticflickr.com/{server}/{id}_{secret}_c.jpg".format(**p),
+        "flickr_url": "http://flickr.com/photos/136060105@N07/{id}/".format(**p),
     }
     my_photos.append(single_photo)
 
