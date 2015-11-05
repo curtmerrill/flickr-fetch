@@ -1,4 +1,3 @@
-import boto3
 import json
 import requests
 
@@ -39,7 +38,5 @@ for p in get_album():
 
 photos_json = json.dumps(my_photos)
 
-# AWS credentials are saved according to boto3 docs
-s3 = boto3.resource('s3')
-s3.Bucket(AWS_BUCKET).put_object(Key=AWS_FILE, Body=photos_json)
-
+with open(DEST_FILE, 'w') as f:
+   f.write(photos_json) 
